@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './App.css';
 import Navi from "./componets/Navi.";
 import Box from "@mui/material/Box";
@@ -7,13 +7,17 @@ import Typography from "@mui/material/Typography";
 import {Route, Routes, useNavigate} from "react-router-dom"
 import Login from "./componets/Login"
 import UserTable from "./componets/boards/UserBoard";
-import {ListItemButton, Tab, Tabs, List, ListItemText, Collapse, Grid, Divider} from "@mui/material";
+import {Collapse, Divider, Grid, keyframes, List, ListItemButton, ListItemText, Tab, Tabs} from "@mui/material";
 import Button from "@mui/material/Button";
 import NoticeBoard from "./componets/boards/NoticeBoard";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import Paper from "@mui/material/Paper";
 import AutoDataBoard from "./componets/boards/AutoDataBoard";
+import "aos/dist/aos.css";
+import AOS from "aos";
+import {StarIcon} from "./componets/StarIcon";
+import {TableName} from "./componets/boards/TableName";
+
 
 const boards = [
     {content: 'Notice', url: 'notice', title: '공지사항'},
@@ -21,69 +25,96 @@ const boards = [
     {content: '자유', url: 'free', title: '자유게시판'},
 ]
 
-interface ScheduleSourceDto {
-    id: number;
-    makerUid: string;
-    sourceCalendarId: number;
-    color: number;
-
-    title: string;
-    description: string;
-
-    guestEditPermission: boolean;
-
-    link: string;
-    place: string;
-
-    startDate: string;
-    endDate: string;
-    startTime: string;
-    endTime: string;
+interface BoardData{
+    key: string,
+    tableName: TableName
 }
-
 //alarm, calendar, device, firends, group, schedule
 
-const makeBoard = <T extends object>(apiUrl: string) => {
-    return (
-        <AutoDataBoard<T>
-            apiUrl={apiUrl} />)
-}
+// const makeBoard = (apiUrl: string) => {
+//     return (
+//         <AutoDataBoard
+//             apiUrl={apiUrl}/>)
+// }
 
 const tables = [
-    {category: 'Schedule',
+    {
+        category: 'Schedule',
         values: [
-            {key:'source', board: makeBoard<ScheduleSourceDto>},
-            {key:'security'}
+            {key: 'source', tableName: TableName.SCHEDULE_SOURCE},
+            {key: 'security', tableName: TableName.SCHEDULE_SECURITY}
         ]
     },
-    {category: 'Group',
+    {
+        category: 'Group',
         values: [
-            {key:'group'},
-            {key:'group and user'}
-        ]},
-    {category: 'Alarm',
+            {key: 'group', tableName: TableName.GROUP},
+            {key: 'group and user', tableName: TableName.GROUP_AND_USER}
+        ]
+    },
+    {
+        category: 'Alarm',
         values: [
-            {key:'alarm'}
-        ]},
-    {category: 'Calendar',
+            {key: 'alarm', tableName: TableName.ALARM}
+        ]
+    },
+    {
+        category: 'Calendar',
         values: [
-            {key:'calendar'}
-        ]},
-    {category: 'Device',
+            {key: 'calendar', tableName: TableName.CALENDAR}
+        ]
+    },
+    {
+        category: 'Device',
         values: [
-            {key:'device'}
-        ]},
-    {category: 'Friend',
+            {key: 'device', tableName: TableName.CALENDAR}
+        ]
+    },
+    {
+        category: 'Friend',
         values: [
-            {key:'friend'}
-        ]},
+            {key: 'friend', tableName: TableName.FRIEND_RELATION}
+        ]
+    },
 ]
+
+const starLineMove = (maxMarginPercent: number) => keyframes(
+    `
+        from {margin-right: 100%}
+        to{margin-right: ${maxMarginPercent}%;}
+        `
+)
+
+
+function MoveStarLine(props: { maxMarginPercent: number, color: string }) {
+    return (
+        <div
+            style={{
+                paddingRight: `${props.maxMarginPercent}%`
+            }}
+        >
+            <div className={"star-line"}
+                 style={{
+                     backgroundColor: props.color,
+                     width: `${100 - props.maxMarginPercent}%`,
+                     display: "flex",
+                     justifyContent: "flex-end",
+                 }}
+            >
+                <StarIcon color={props.color} style={{
+                    filter: `saturate(300%)`,
+                }} />
+            </div>
+        </div>
+    );
+}
 
 
 function App() {
     const [tabNumber, setTabNumber] = React.useState(0);
     const [tableMenuOpens, setTableMenuOpens] = React.useState<boolean[]>(Array.from({length: tables.length}, () => false));
-    const [tableName, setTableName] = React.useState<string>('Data');
+    const [tableName, setTableName] = React.useState<string>('');
+    const [boardData, setBoardData] = React.useState<BoardData>({key: "", tableName: TableName.SCHEDULE_SOURCE});
     const navigate = useNavigate();
 
     const tabChange = (event: React.SyntheticEvent<any>, moveTabNumber: number) => {
@@ -97,9 +128,18 @@ function App() {
         setTableMenuOpens(opens);
     }
 
-    const tableMenuClick = (category: string, value: string) => {
-         setTableName(`${category} > ${value}`);
+    const tableMenuClick = (category: string, boardData: BoardData) => {
+        setTableName(`${category} > ${boardData.key}`);
+        setBoardData(boardData);
+        console.log("chage : " + JSON.stringify(boardData))
     }
+
+    useEffect(() => {
+        AOS.init({
+            duration: 1500,
+            once: true
+        });
+    }, [])
 
 
     return (
@@ -126,7 +166,7 @@ function App() {
             <Route path="/data" element={
                 <Box>
                     <Navi/>
-                    <Grid container spacing={1} sx={{p:2}} >
+                    <Grid container spacing={1} sx={{p: 2}}>
                         <Grid size={2}>
                             <List>
                                 {
@@ -138,7 +178,7 @@ function App() {
                                                 <ListItemText primary={table.category}
                                                               slotProps={{
                                                                   primary: {
-                                                                      fontWeight:'bold'
+                                                                      fontWeight: 'bold'
                                                                   }
                                                               }}
                                                 />
@@ -148,7 +188,9 @@ function App() {
                                                 <List component="div" disablePadding>
                                                     {
                                                         table.values.map((value, index) => (
-                                                            <ListItemButton sx={{pl: 4}} key={index} onClick={() => {tableMenuClick(table.category, value.key)}}>
+                                                            <ListItemButton sx={{pl: 4}} key={index} onClick={() => {
+                                                                tableMenuClick(table.category, value)
+                                                            }}>
                                                                 <ListItemText primary={value.key}/>
                                                             </ListItemButton>
                                                         ))
@@ -160,14 +202,18 @@ function App() {
                                 }
                             </List>
                         </Grid>
-                        <Divider sx={{background:"inherit", my:2}} flexItem orientation={"vertical"} />
-                        <Grid size={"grow"} >
+                        <Divider sx={{background: "inherit", my: 2}} flexItem orientation={"vertical"}/>
+                        <Grid size={"grow"}>
                             <Typography
                                 sx={{p: 2}}
                                 variant="h4">
                                 {tableName}
                             </Typography>
-                            {makeBoard<ScheduleSourceDto>('/schedule/sources')}
+
+                            <AutoDataBoard
+                                apiUrl={'/admin/table'}
+                                tableName={boardData.tableName}
+                            />
                         </Grid>
                     </Grid>
                 </Box>
@@ -214,6 +260,20 @@ function App() {
 
             <Route path="/" element={<Box>
                 <Navi/>
+                <Box sx={{height: `calc(100vh - 100px)`}}>
+                    <Typography
+                        sx={{textAlign: 'center', fontSize: 96, fontWeight: 'bold', my: '8%'}}
+                        data-aos={"fade-up"}
+                    >
+                        번거러운 일정공유<br/>
+                        PlanIt에서 쉽고 간편하게
+                    </Typography>
+                    <div className={'star-line-container'} data-aos="fade">
+                        <MoveStarLine color={"#FF8383"} maxMarginPercent={15}/>
+                        <MoveStarLine color={"#FFEF7A"} maxMarginPercent={10}/>
+                        <MoveStarLine color={"#9EFF86"} maxMarginPercent={23}/>
+                    </div>
+                </Box>
             </Box>
             }/>
         </Routes>

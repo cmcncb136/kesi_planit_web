@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+
+.star-line{
+  height: 45px;
+  width: 100%;
+  animation: star-line-move 5s ease-in-out, star-line-breath infinite 3s alternate ease-in-out;
+  animation-delay: 0s, 5s;
+  animation-fill-mode: forwards;
+  border-radius: 0 100px 100px 0;
+  transform-origin: left;
+}
+
+.star-line-container {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@keyframes star-line-move {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes star-line-breath{
+  from {
+    width: 100%;
+  }to {
+    width: 80%;
+  }
+}
