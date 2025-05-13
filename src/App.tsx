@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
 import './App.css';
-import Navi from "./componets/Navi.";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -15,9 +14,9 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import AutoDataBoard from "./componets/boards/AutoDataBoard";
 import "aos/dist/aos.css";
 import AOS from "aos";
-import {StarIcon} from "./componets/StarIcon";
 import {TableName} from "./componets/boards/TableName";
-
+import LayoutWithNav from "./componets/layout/LayoutWithNav";
+import Home from "./componets/Home";
 
 const boards = [
     {content: 'Notice', url: 'notice', title: '공지사항'},
@@ -25,17 +24,10 @@ const boards = [
     {content: '자유', url: 'free', title: '자유게시판'},
 ]
 
-interface BoardData{
+interface BoardData {
     key: string,
     tableName: TableName
 }
-//alarm, calendar, device, firends, group, schedule
-
-// const makeBoard = (apiUrl: string) => {
-//     return (
-//         <AutoDataBoard
-//             apiUrl={apiUrl}/>)
-// }
 
 const tables = [
     {
@@ -78,36 +70,6 @@ const tables = [
     },
 ]
 
-const starLineMove = (maxMarginPercent: number) => keyframes(
-    `
-        from {margin-right: 100%}
-        to{margin-right: ${maxMarginPercent}%;}
-        `
-)
-
-
-function MoveStarLine(props: { maxMarginPercent: number, color: string }) {
-    return (
-        <div
-            style={{
-                paddingRight: `${props.maxMarginPercent}%`
-            }}
-        >
-            <div className={"star-line"}
-                 style={{
-                     backgroundColor: props.color,
-                     width: `${100 - props.maxMarginPercent}%`,
-                     display: "flex",
-                     justifyContent: "flex-end",
-                 }}
-            >
-                <StarIcon color={props.color} style={{
-                    filter: `saturate(300%)`,
-                }} />
-            </div>
-        </div>
-    );
-}
 
 
 function App() {
@@ -144,12 +106,12 @@ function App() {
 
     return (
         <Routes>
+            {/*Nav 없음*/}
             <Route path="/login" element={<Login/>}/>
 
-            <Route path="/user" element={
-                <Box>
-                    <Navi/>
-
+            {/*Nav 있음*/}
+            <Route element={<LayoutWithNav/>}>
+                <Route path="/user" element={
                     <Container maxWidth="xl">
                         <Typography
                             sx={{paddingY: 3}}
@@ -159,13 +121,9 @@ function App() {
 
                         <UserTable/>
                     </Container>
-                </Box>
-            }/>
+                }/>
 
-
-            <Route path="/data" element={
-                <Box>
-                    <Navi/>
+                <Route path="/data" element={
                     <Grid container spacing={1} sx={{p: 2}}>
                         <Grid size={2}>
                             <List>
@@ -216,66 +174,49 @@ function App() {
                             />
                         </Grid>
                     </Grid>
-                </Box>
-            }/>
+                }/>
 
-            <Route path="/board/*" element={<Box>
-                <Navi/>
-                <Container maxWidth="xl">
-                    <Tabs value={tabNumber} sx={{my: 4}} onChange={tabChange} centered>
-                        {boards.map((board) => (
-                            <Tab
-                                sx={{px: 4}} key={board.content}
-                                label={board.content}/>
-                        ))}
-                    </Tabs>
-                    <Typography
-                        sx={{paddingY: 1}}
-                        variant="h4">
-                        {boards[tabNumber].title}
-                    </Typography>
-                    <Routes>
+                <Route path="/board/*" element={
+                    <Container maxWidth="xl">
+                        <Tabs value={tabNumber} sx={{my: 4}} onChange={tabChange} centered>
+                            {boards.map((board) => (
+                                <Tab
+                                    sx={{px: 4}} key={board.content}
+                                    label={board.content}/>
+                            ))}
+                        </Tabs>
+                        <Typography
+                            sx={{paddingY: 1}}
+                            variant="h4">
+                            {boards[tabNumber].title}
+                        </Typography>
+                        <Routes>
 
-                        <Route path={"/qa"} element={
-                            <Button>Q&A</Button>
-                        }>
-                        </Route>
+                            <Route path={"/qa"} element={
+                                <Button>Q&A</Button>
+                            }>
+                            </Route>
 
-                        <Route path={"/free"} element={
-                            <Button>Free</Button>
-                        }>
-                        </Route>
+                            <Route path={"/free"} element={
+                                <Button>Free</Button>
+                            }>
+                            </Route>
 
-                        <Route path={"*"} element={
-                            <Box>
-                                <Button>Notice</Button>
-                                <NoticeBoard/>
-                            </Box>
-                        }>
-                        </Route>
-                    </Routes>
-                </Container>
-            </Box>
-            }/>
+                            <Route path={"*"} element={
+                                <Box>
+                                    <Button>Notice</Button>
+                                    <NoticeBoard/>
+                                </Box>
+                            }>
+                            </Route>
+                        </Routes>
+                    </Container>
+                }/>
 
-            <Route path="/" element={<Box>
-                <Navi/>
-                <Box sx={{height: `calc(100vh - 100px)`}}>
-                    <Typography
-                        sx={{textAlign: 'center', fontSize: 96, fontWeight: 'bold', my: '8%'}}
-                        data-aos={"fade-up"}
-                    >
-                        번거러운 일정공유<br/>
-                        PlanIt에서 쉽고 간편하게
-                    </Typography>
-                    <div className={'star-line-container'} data-aos="fade">
-                        <MoveStarLine color={"#FF8383"} maxMarginPercent={15}/>
-                        <MoveStarLine color={"#FFEF7A"} maxMarginPercent={10}/>
-                        <MoveStarLine color={"#9EFF86"} maxMarginPercent={23}/>
-                    </div>
-                </Box>
-            </Box>
-            }/>
+                <Route path="/" element={
+                    <Home />
+                }/>
+            </Route>
         </Routes>
     );
 }

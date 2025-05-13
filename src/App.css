@@ -39,7 +39,7 @@
 
 
 .star-line{
-  height: 45px;
+  height: 5vh;
   width: 100%;
   animation: star-line-move 5s ease-in-out, star-line-breath infinite 3s alternate ease-in-out;
   animation-delay: 0s, 5s;
@@ -49,7 +49,7 @@
 }
 
 .star-line-container {
-  height: 200px;
+  height: 25vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

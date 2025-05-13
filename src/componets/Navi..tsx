@@ -16,13 +16,14 @@ import AdbIcon from '@mui/icons-material/Adb';
 import {getAuth, signOut} from "firebase/auth";
 import {useAuth} from "./AuthContext";
 import {NavLink} from "react-router-dom";
+import {ForwardedRef} from "react";
 
 const pages = ['User', 'Data', 'Board'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 const appName = "PlanIt"
 
 
-function Navi() {
+const Navi = React.forwardRef((props, ref: ForwardedRef<HTMLDivElement>) => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -54,8 +55,9 @@ function Navi() {
 
     const {user} = useAuth()
 
+
     return (
-        <AppBar position="static" >
+        <AppBar ref={ref} position="static" >
             <Container maxWidth="xl">
                 <Toolbar disableGutters >
                     {/* 로고 */}
@@ -64,7 +66,7 @@ function Navi() {
                             src={"/logo.png"}
                             alt="logo"
                             style={{ width: 'auto', height: '5vh', padding: '0px'}}
-                            />
+                        />
                     </IconButton>
 
                     {/* app-name */}
@@ -196,14 +198,15 @@ function Navi() {
                         </Menu>
                     </Box> }
                     {
-                         !user && <Box sx={{flexGrow: 0}}>
+                        !user && <Box sx={{flexGrow: 0}}>
                             <Button component={NavLink} to={"/login"} variant={"text"} color={"inherit"}>Login</Button>
-                         </Box>
+                        </Box>
                     }
                 </Toolbar>
             </Container>
         </AppBar>
     )
-}
+})
+
 
 export default Navi;
