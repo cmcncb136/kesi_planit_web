@@ -2,10 +2,10 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import {Grid} from "@mui/material";
-import React from "react";
 import {StarIcon} from "./StarIcon";
 import {ReactComponent as AppCalendarExample1} from "../img/app_calendar_example_1.svg";
 import {ReactComponent as AppCalendarExample2} from "../img/app_calendar_example_2.svg";
+import Graph from "./graph";
 
 
 function MoveStarLine(props: { maxMarginPercent: number, color: string }) {
@@ -64,6 +64,15 @@ export default function Home() {
                         <AppCalendarExample2 data-aos="fade-up" data-aos-offset={1000}/>
                     </Grid>
                 </Grid>
+            </Container>
+            <Container maxWidth="xl">
+                <Typography
+                    sx={{textAlign: 'center', fontSize: '10vh', fontWeight: 'bold'}}
+                    data-aos={"fade-up"}>
+                    일정공유 일정생성을<br/>
+                    한 번에 깔금하게
+                </Typography>
+                <Graph data-aos="fade-up"/>
             </Container>
         </Box>
     )

@@ -19,7 +19,7 @@ import {NavLink} from "react-router-dom";
 import {ForwardedRef} from "react";
 
 const pages = ['User', 'Data', 'Board'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Logout'];
 const appName = "PlanIt"
 
 
@@ -59,13 +59,13 @@ const Navi = React.forwardRef((props, ref: ForwardedRef<HTMLDivElement>) => {
     return (
         <AppBar ref={ref} position="static" >
             <Container maxWidth="xl">
-                <Toolbar disableGutters >
+                <Toolbar disableGutters>
                     {/* 로고 */}
-                    <IconButton sx={{display: {xs: 'none', md: 'flex'}, p: 0 }} >
+                    <IconButton sx={{display: {xs: 'none', md: 'flex'}, p: 0}}>
                         <img
                             src={"/logo.png"}
                             alt="logo"
-                            style={{ width: 'auto', height: '5vh', padding: '0px'}}
+                            style={{width: 'auto', height: '35px', padding: '0px'}}
                         />
                     </IconButton>
 
@@ -132,7 +132,14 @@ const Navi = React.forwardRef((props, ref: ForwardedRef<HTMLDivElement>) => {
 
                     {/* 작아질 때 나오는 중간에 나오는 로고 */}
                     {/*  작은 화면(xs) 에서만 보이고, 중간 이상의 화면(md 이상) */}
-                    <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
+                    <IconButton sx={{display: {xs: 'flex', md: 'none'}, p: 0}}>
+                        <img
+                            src={"/logo.png"}
+                            alt="logo"
+                            style={{width: 'auto', height: '35px', padding: '0px'}}
+                        />
+                    </IconButton>
+
                     <Typography
                         variant="h5"
                         noWrap
@@ -142,9 +149,8 @@ const Navi = React.forwardRef((props, ref: ForwardedRef<HTMLDivElement>) => {
                             mr: 2,
                             display: {xs: 'flex', md: 'none'},
                             flexGrow: 1,
-                            fontFamily: 'monospace',
+                            fontFamily: 'serif',
                             fontWeight: 700,
-                            letterSpacing: '.1rem',
                             color: 'inherit',
                             textDecoration: 'none',
                         }}
@@ -191,12 +197,14 @@ const Navi = React.forwardRef((props, ref: ForwardedRef<HTMLDivElement>) => {
                             onClose={handleCloseUserMenu}
                         >
                             {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={() => { handleCloseUserMenu(setting)}}>
+                                <MenuItem key={setting} onClick={() => {
+                                    handleCloseUserMenu(setting)
+                                }}>
                                     <Typography sx={{textAlign: 'center'}}>{setting}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
-                    </Box> }
+                    </Box>}
                     {
                         !user && <Box sx={{flexGrow: 0}}>
                             <Button component={NavLink} to={"/login"} variant={"text"} color={"inherit"}>Login</Button>
