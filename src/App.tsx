@@ -6,12 +6,13 @@ import Typography from "@mui/material/Typography";
 import {Route, Routes, useNavigate} from "react-router-dom"
 import Login from "./componets/Login"
 import UserTable from "./componets/boards/UserBoard";
-import {Collapse, Divider, Grid, keyframes, List, ListItemButton, ListItemText, Tab, Tabs} from "@mui/material";
+import {Collapse, Divider, Fab, Grid, keyframes, List, ListItemButton, ListItemText, Tab, Tabs} from "@mui/material";
 import Button from "@mui/material/Button";
 import NoticeBoard from "./componets/boards/NoticeBoard";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import AutoDataBoard from "./componets/boards/AutoDataBoard";
+import EditIcon from '@mui/icons-material/Edit';
 import "aos/dist/aos.css";
 import AOS from "aos";
 import {TableName} from "./componets/boards/TableName";
@@ -40,7 +41,7 @@ const tables = [
     {
         category: 'Group',
         values: [
-            {key: 'group', tableName: TableName.GROUP},
+            {key: 'group', tableName: TableName.GROUP_TABLE},
             {key: 'group and user', tableName: TableName.GROUP_AND_USER}
         ]
     },
@@ -59,23 +60,22 @@ const tables = [
     {
         category: 'Device',
         values: [
-            {key: 'device', tableName: TableName.CALENDAR}
+            {key: 'device', tableName: TableName.DEVICE }
         ]
     },
     {
         category: 'Friend',
         values: [
-            {key: 'friend', tableName: TableName.FRIEND_RELATION}
+            {key: 'friend', tableName: TableName.FRIENDS_RELATION}
         ]
     },
 ]
 
 
-
 function App() {
     const [tabNumber, setTabNumber] = React.useState(0);
     const [tableMenuOpens, setTableMenuOpens] = React.useState<boolean[]>(Array.from({length: tables.length}, () => false));
-    const [tableName, setTableName] = React.useState<string>('');
+    const [tableName, setTableName] = React.useState<string>("Schedule > source");
     const [boardData, setBoardData] = React.useState<BoardData>({key: "", tableName: TableName.SCHEDULE_SOURCE});
     const navigate = useNavigate();
 
@@ -177,7 +177,8 @@ function App() {
                 }/>
 
                 <Route path="/board/*" element={
-                    <Container maxWidth="xl">
+                    //Pab 버큰 공간 확보
+                    <Container maxWidth="xl" sx={{paddingBottom: 10}}>
                         <Tabs value={tabNumber} sx={{my: 4}} onChange={tabChange} centered>
                             {boards.map((board) => (
                                 <Tab
@@ -210,11 +211,20 @@ function App() {
                             }>
                             </Route>
                         </Routes>
+                        <Fab color="primary" aria-label="write"
+                             sx={{
+                                 position: 'fixed',
+                                 bottom: 16, // 하단 여백 (px)
+                                 right: 16,  // 우측 여백 (px)
+                                 zIndex: 1000
+                             }}>
+                            <EditIcon/>
+                        </Fab>
                     </Container>
                 }/>
 
                 <Route path="/" element={
-                    <Home />
+                    <Home/>
                 }/>
             </Route>
         </Routes>
