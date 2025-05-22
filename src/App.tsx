@@ -18,6 +18,7 @@ import AOS from "aos";
 import {TableName} from "./componets/boards/TableName";
 import LayoutWithNav from "./componets/layout/LayoutWithNav";
 import Home from "./componets/Home";
+import Article from "./componets/Article";
 
 const boards = [
     {content: 'Notice', url: 'notice', title: '공지사항'},
@@ -217,11 +218,17 @@ function App() {
                                  bottom: 16, // 하단 여백 (px)
                                  right: 16,  // 우측 여백 (px)
                                  zIndex: 1000
-                             }}>
+                             }}
+                            onClick={() => { navigate("/article") }}
+                        >
                             <EditIcon/>
                         </Fab>
                     </Container>
                 }/>
+
+                <Route path={"/article/:type"}  element={
+                    <Article />
+                } />
 
                 <Route path="/" element={
                     <Home/>
