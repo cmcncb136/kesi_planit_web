@@ -46,7 +46,7 @@ export default function AutoDataBoard(props: { apiUrl: string, tableName: TableN
         }).then(rst => {
             console.log(rst.data);
             setRows(rst.data.content);
-            setRowCount(rst.data.totalElements)
+            setRowCount(rst.data.totalPages)
         }).catch(e => {
             console.log(e)
         })

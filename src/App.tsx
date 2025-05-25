@@ -6,9 +6,9 @@ import Typography from "@mui/material/Typography";
 import {Route, Routes, useNavigate} from "react-router-dom"
 import Login from "./componets/Login"
 import UserTable from "./componets/boards/UserBoard";
-import {Collapse, Divider, Fab, Grid, keyframes, List, ListItemButton, ListItemText, Tab, Tabs} from "@mui/material";
+import {Collapse, Divider, Fab, Grid, List, ListItemButton, ListItemText, Tab, Tabs} from "@mui/material";
 import Button from "@mui/material/Button";
-import NoticeBoard from "./componets/boards/NoticeBoard";
+import ArticleBoard from "./componets/boards/ArticleBoard";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import AutoDataBoard from "./componets/boards/AutoDataBoard";
@@ -19,11 +19,12 @@ import {TableName} from "./componets/boards/TableName";
 import LayoutWithNav from "./componets/layout/LayoutWithNav";
 import Home from "./componets/Home";
 import Article from "./componets/Article";
+import {Category} from "./componets/article/Category";
 
 const boards = [
-    {content: 'Notice', url: 'notice', title: '공지사항'},
-    {content: 'Q&A', url: 'qa', title: 'Q&A'},
-    {content: '자유', url: 'free', title: '자유게시판'},
+    {content: 'Notice', url: 'notice', title: '공지사항', category: Category.NOTICE},
+    {content: 'Q&A', url: 'qa', title: 'Q&A', category: Category.QA},
+    {content: '자유', url: 'free', title: '자유게시판', category: Category.FREE},
 ]
 
 interface BoardData {
@@ -79,6 +80,8 @@ function App() {
     const [tableName, setTableName] = React.useState<string>("Schedule > source");
     const [boardData, setBoardData] = React.useState<BoardData>({key: "", tableName: TableName.SCHEDULE_SOURCE});
     const navigate = useNavigate();
+
+    const [category, setCategory] = React.useState<Category>(Category.NOTICE);
 
     const tabChange = (event: React.SyntheticEvent<any>, moveTabNumber: number) => {
         setTabNumber(moveTabNumber)
@@ -184,7 +187,9 @@ function App() {
                             {boards.map((board) => (
                                 <Tab
                                     sx={{px: 4}} key={board.content}
-                                    label={board.content}/>
+                                    label={board.content}
+                                    onClick={() => setCategory(board.category)}
+                                />
                             ))}
                         </Tabs>
                         <Typography
@@ -193,25 +198,27 @@ function App() {
                             {boards[tabNumber].title}
                         </Typography>
                         <Routes>
-
                             <Route path={"/qa"} element={
-                                <Button>Q&A</Button>
+                                <Box>
+                                    <Button>Q&A</Button>
+                                </Box>
                             }>
                             </Route>
 
                             <Route path={"/free"} element={
-                                <Button>Free</Button>
-                            }>
+                                <Box>
+                                    <Button>Free</Button>
+                                </Box>                            }>
                             </Route>
 
                             <Route path={"*"} element={
                                 <Box>
                                     <Button>Notice</Button>
-                                    <NoticeBoard/>
                                 </Box>
                             }>
                             </Route>
                         </Routes>
+                        <ArticleBoard category={category}/>
                         <Fab color="primary" aria-label="write"
                              sx={{
                                  position: 'fixed',
